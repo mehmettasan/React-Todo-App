@@ -19,13 +19,18 @@ let defaultTodos = [
 function Todos() {
     const [todos, setTodos] = useState(defaultTodos)
     const [todosLeft, setTodosLeft] = useState(0);
-    const [searchText, setSearchText] = useState("")
+    const [newTodoText, setNewTodoText] = useState("")
     const [sectionTodos, setSectionTodos] = useState(todos)
 
-
     let filteredTodos = sectionTodos.filter((item) => {
-        return item.tododesc.toLowerCase().includes(searchText.toLowerCase())
+        return item.tododesc
     })
+
+    const addNewTodo = (e) => {
+        e.preventDefault()
+        setTodos([...todos, { tododesc: newTodoText, done: false }])
+        setNewTodoText("")
+    }
 
     const btnTodoFilter = (section) => {
         if (section === "all") {
@@ -42,7 +47,6 @@ function Todos() {
     }
 
     const clearCompleted = () => {
-        setSectionTodos(todos.filter(item => !item.done))
         setTodos(todos.filter(item => !item.done))
     }
 
@@ -56,6 +60,7 @@ function Todos() {
             return 0;
         })
         setTodosLeft(todocount);
+        setSectionTodos(todos)
     }, [todos])
 
     const checkboxChanged = (e) => {
@@ -71,7 +76,9 @@ function Todos() {
 
     return (
         <div id="todo-container">
-            <input id="search-todo" placeholder="What needs to be done?" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+            <form onSubmit={addNewTodo}>
+                <input id="search-todo" placeholder="What needs to be done?" value={newTodoText} onChange={(e) => setNewTodoText(e.target.value)} />
+            </form>
             <ul className="todo-list">
                 {
                     filteredTodos.map((item, key) =>
